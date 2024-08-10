@@ -11,6 +11,19 @@ void add_tile(int x, int y, int value) {
     current_board_capacity++;
 }
 
+int board_max() {
+    // return the maximum value on the board.
+    int max = 0;
+    for (int i = 0; i < TILE_SIZE; i++) {
+        for (int j = 0; j < TILE_SIZE; j++) {
+            if (current_board[i][j] > max) {
+                max = current_board[i][j];
+            }
+        }
+    }
+    return max;
+}
+
 int board_full() {
     // check if the board is full.
     return current_board_capacity == TILE_SIZE * TILE_SIZE;
@@ -25,7 +38,8 @@ int check_rows(int x_direction) {
         // right shift
         for (int r_idx = 0; r_idx < TILE_SIZE; r_idx++) {
             for (int i = TILE_SIZE-2; i >= 0; i--) {
-                if (current_board[r_idx][i] != 0 && current_board[r_idx][i+1] == 0) {
+                if ((current_board[r_idx][i] != 0 && current_board[r_idx][i+1] == 0) ||
+                        (current_board[r_idx][i] != 0 && current_board[r_idx][i+1] == current_board[r_idx][i])) {
                     return 1;
                 }
             }
@@ -34,7 +48,8 @@ int check_rows(int x_direction) {
         // left shift
         for (int r_idx = 0; r_idx < TILE_SIZE; r_idx++) {
             for (int i = 1; i <= TILE_SIZE-1; i++) {
-                if (current_board[r_idx][i] != 0 && current_board[r_idx][i-1] == 0) {
+                if ((current_board[r_idx][i] != 0 && current_board[r_idx][i-1] == 0) ||
+                        (current_board[r_idx][i] != 0 && current_board[r_idx][i-1] == current_board[r_idx][i])) {
                     return 1;
                 }
             }
@@ -52,7 +67,8 @@ int check_cols(int y_direction) {
         // down shift
         for (int r_idx = 0; r_idx < TILE_SIZE; r_idx++) {
             for (int i = TILE_SIZE-2; i >= 0; i--) {
-                if (current_board[i][r_idx] != 0 && current_board[i+1][r_idx] == 0) {
+                if ((current_board[i][r_idx] != 0 && current_board[i+1][r_idx] == 0) ||
+                        (current_board[i][r_idx] != 0 && current_board[i+1][r_idx] == current_board[i][r_idx])) {
                     return 1;
                 }
             }
@@ -61,7 +77,8 @@ int check_cols(int y_direction) {
         // up shift
         for (int r_idx = 0; r_idx < TILE_SIZE; r_idx++) {
             for (int i = 1; i <= TILE_SIZE-1; i++) {
-                if (current_board[i][r_idx] != 0 && current_board[i-1][r_idx] == 0) {
+                if ((current_board[i][r_idx] != 0 && current_board[i-1][r_idx] == 0) ||
+                        (current_board[i][r_idx] != 0 && current_board[i-1][r_idx] == current_board[i][r_idx])) {
                     return 1;
                 }
             }
@@ -79,6 +96,10 @@ void shift_row(int x, int x_direction) {
                     if (current_board[x][j] == 0) {
                         current_board[x][j] = current_board[x][j-1];
                         current_board[x][j-1] = 0;
+                    } else if (current_board[x][j] == current_board[x][j-1]) {
+                        current_board[x][j] *= 2;
+                        current_board[x][j-1] = 0;
+                        current_board_capacity--;
                     } else {
                         printf("%d\n", current_board[x][j]);
                         break;
@@ -94,6 +115,10 @@ void shift_row(int x, int x_direction) {
                     if (current_board[x][j] == 0) {
                         current_board[x][j] = current_board[x][j+1];
                         current_board[x][j+1] = 0;
+                    } else if (current_board[x][j] == current_board[x][j+1]) {
+                        current_board[x][j] *= 2;
+                        current_board[x][j+1] = 0;
+                        current_board_capacity--;
                     } else {
                         printf("%d\n", current_board[x][j]);
                         break;
@@ -114,6 +139,10 @@ void shift_col(int y, int y_direction) {
                     if (current_board[j][y] == 0) {
                         current_board[j][y] = current_board[j-1][y];
                         current_board[j-1][y] = 0;
+                    } else if (current_board[j][y] == current_board[j-1][y]) {
+                        current_board[j][y] *= 2;
+                        current_board[j-1][y] = 0;
+                        current_board_capacity--;
                     } else {
                         printf("%d\n", current_board[j][y]);
                         break;
@@ -129,6 +158,10 @@ void shift_col(int y, int y_direction) {
                     if (current_board[j][y] == 0) {
                         current_board[j][y] = current_board[j+1][y];
                         current_board[j+1][y] = 0;
+                    } else if (current_board[j][y] == current_board[j+1][y]) {
+                        current_board[j][y] *= 2;
+                        current_board[j+1][y] = 0;
+                        current_board_capacity--;
                     } else {
                         printf("%d\n", current_board[j][y]);
                         break;
@@ -141,7 +174,7 @@ void shift_col(int y, int y_direction) {
 
 char *render_tile(int x, int y) {
     // given some coordinate in board, return its string representation.
-    static char tile[4];
+    static char tile[TILE_SIZE];
     for  (int i = 0; i < 4; i++) {
         tile[i] = ' ';
     }
@@ -198,10 +231,15 @@ int main(int argc, char* argv[]) {
             if (DEBUG_PRINT) printf("tile added at %d, %d\n", x, y);
         }
 
-        if (board_full()) {
+        if (board_full() && ((check_rows(1) || check_rows(-1) || check_cols(1) || check_cols(-1)))) {
             // FIXME: add another check to see if no more moves are possible.
             game_running = 0;
             CLEAR;
+            break;
+        } else if (board_max() == 2048) {
+            game_running = 0;
+            CLEAR;
+            printf("You have reached 2048!\n");
             break;
         } else {
             render_board(TILE_SIZE);
