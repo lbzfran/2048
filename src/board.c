@@ -230,7 +230,7 @@ int boot_cli() {
             if (DEBUGGING) printf("tile added at %d, %d\n", x, y);
         }
 
-        if (board_full() && ((check_rows(1) || check_rows(-1) || check_cols(1) || check_cols(-1)))) {
+        if (board_full() && ((check_rows(LEFT) || check_rows(RIGHT) || check_cols(UP) || check_cols(DOWN)))) {
             // FIXME: add another check to see if no more moves are possible.
             game_running = 0;
             CLEAR;

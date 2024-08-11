@@ -15,14 +15,10 @@ else
 		LINK=-lraylib -lm
 	endif
 	ifeq ($(UNAME_S),Darwin)
-		CFLAGS+= -D OSX
 		echo "OSX detected, compilation not supported"
 		exit 1
 	endif
 endif
-
-board:
-	$(SH) "$(CC) $(CFLAGS) ./src/board.c -o board"
 
 screen:
 	$(SH) "$(CC) $(CFLAGS) ./src/board.c ./src/screen.c -o screen $(INC) $(LIB) $(LINK)"
