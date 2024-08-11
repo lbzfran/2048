@@ -1,30 +1,27 @@
 
-#ifdef _WIN32
-#define CLEAR printf("\033[2J")
-#endif
+#ifndef BOARD_H
+#define BOARD_H
 
-#ifdef linux
-#define CLEAR system("clear")
-#endif
+#include "config.h"
 
+extern int current_board[TILE_SIZE][TILE_SIZE];
+extern int current_board_capacity;
 
-#define DEBUG
-
-#ifdef DEBUG
- #define DEBUG_PRINT 1
-#else
- #define DEBUG_PRINT 0
-#endif
-
-#define ASSERT(x) if (!(x)) { printf("Assertion failed: %s\n", #x); exit(1); }
-
-#define TILE_SIZE 4
+typedef enum {
+    UP,
+    DOWN,
+    LEFT,
+    RIGHT
+} Direction;
 
 void add_tile(int x, int y, int value);
+int board_max();
 int board_full();
-int check_rows(int x_direction);
-int check_cols(int y_direction);
-void shift_row(int x, int x_direction);
-void shift_col(int y, int y_direction);
+int check_rows(Direction);
+int check_cols(Direction);
+void shift_row(int x, Direction);
+void shift_col(int y, Direction);
 char *render_tile(int x, int y);
 void render_board(int num_tiles);
+
+#endif

@@ -2,8 +2,8 @@
 #include <stdlib.h>
 #include "board.h"
 
-static int current_board[TILE_SIZE][TILE_SIZE] = {{0}};
-static int current_board_capacity = 0;
+int current_board[TILE_SIZE][TILE_SIZE] = {{0}};
+int current_board_capacity = 0;
 
 void add_tile(int x, int y, int value) {
     // add a tile to the board at position x, y with value.
@@ -29,12 +29,12 @@ int board_full() {
     return current_board_capacity == TILE_SIZE * TILE_SIZE;
 }
 
-int check_rows(int x_direction) {
+int check_rows(Direction direction) {
     // check if a shift is possible in the given direction for all rows.
     // 0 if no shift possible
     // 1 if left/right is possible
     // FIXME: add another check to see if no more moves are possible.
-    if (x_direction == 1) {
+    if (direction == RIGHT) {
         // right shift
         for (int r_idx = 0; r_idx < TILE_SIZE; r_idx++) {
             for (int i = TILE_SIZE-2; i >= 0; i--) {
@@ -44,7 +44,7 @@ int check_rows(int x_direction) {
                 }
             }
         }
-    } else if (x_direction == -1) {
+    } else if (direction == LEFT) {
         // left shift
         for (int r_idx = 0; r_idx < TILE_SIZE; r_idx++) {
             for (int i = 1; i <= TILE_SIZE-1; i++) {
@@ -58,12 +58,12 @@ int check_rows(int x_direction) {
     return 0;
 }
 
-int check_cols(int y_direction) {
+int check_cols(Direction direction) {
     // check if a shift is possible in the given direction for all columns.
     // 0 if no shift possible
     // 1 if up/down is still possible
     // FIXME: add another check to see if no more moves are possible.
-    if (y_direction == 1) {
+    if (direction == DOWN) {
         // down shift
         for (int r_idx = 0; r_idx < TILE_SIZE; r_idx++) {
             for (int i = TILE_SIZE-2; i >= 0; i--) {
@@ -73,7 +73,7 @@ int check_cols(int y_direction) {
                 }
             }
         }
-    } else if (y_direction == -1) {
+    } else if (direction == UP) {
         // up shift
         for (int r_idx = 0; r_idx < TILE_SIZE; r_idx++) {
             for (int i = 1; i <= TILE_SIZE-1; i++) {
@@ -87,8 +87,8 @@ int check_cols(int y_direction) {
     return 0;
 }
 
-void shift_row(int x, int x_direction) {
-    if (x_direction == 1) {
+void shift_row(int x, Direction direction) {
+    if (direction == RIGHT) {
         // right shift
         for (int i = TILE_SIZE-2; i >= 0; i--) {
             if (current_board[x][i] != 0) {
@@ -101,13 +101,13 @@ void shift_row(int x, int x_direction) {
                         current_board[x][j-1] = 0;
                         current_board_capacity--;
                     } else {
-                        printf("%d\n", current_board[x][j]);
+                        //printf("%d\n", current_board[x][j]);
                         break;
                     }
                 }
             }
         }
-    } else {
+    } else if (direction == LEFT) {
         // left shift
         for (int i = 1; i <= TILE_SIZE-1; i++) {
             if (current_board[x][i] != 0) {
@@ -120,7 +120,7 @@ void shift_row(int x, int x_direction) {
                         current_board[x][j+1] = 0;
                         current_board_capacity--;
                     } else {
-                        printf("%d\n", current_board[x][j]);
+                        //printf("%d\n", current_board[x][j]);
                         break;
                     }
                 }
@@ -130,8 +130,8 @@ void shift_row(int x, int x_direction) {
 }
 
 
-void shift_col(int y, int y_direction) {
-    if (y_direction == 1) {
+void shift_col(int y, Direction direction) {
+    if (direction == DOWN) {
         // down shift
         for (int i = TILE_SIZE-2; i >= 0; i--) {
             if (current_board[i][y] != 0) {
@@ -144,13 +144,13 @@ void shift_col(int y, int y_direction) {
                         current_board[j-1][y] = 0;
                         current_board_capacity--;
                     } else {
-                        printf("%d\n", current_board[j][y]);
+                        //printf("%d\n", current_board[j][y]);
                         break;
                     }
                 }
             }
         }
-    } else {
+    } else if (direction == UP) {
         // up shift
         for (int i = 1; i <= TILE_SIZE-1; i++) {
             if (current_board[i][y] != 0) {
@@ -163,7 +163,7 @@ void shift_col(int y, int y_direction) {
                         current_board[j+1][y] = 0;
                         current_board_capacity--;
                     } else {
-                        printf("%d\n", current_board[j][y]);
+                        //printf("%d\n", current_board[j][y]);
                         break;
                     }
                 }
@@ -192,7 +192,6 @@ char *render_tile(int x, int y) {
 }
 
 void render_board(int num_tiles) {
-    //char *board = malloc(board_size);
     /*
     |0000|0001|0002|0003|
     |0100|0101|0102|0103|
@@ -209,8 +208,8 @@ void render_board(int num_tiles) {
 }
 
 
-int main(int argc, char* argv[]) {
-
+int boot_cli() {
+    // play game in CLI mode.
     int x;
     int y;
     int board_moved_lastturn = 1;
@@ -228,7 +227,7 @@ int main(int argc, char* argv[]) {
             } while (current_board[x][y] != 0 && !board_full());
             // FIXME: give ability to adapt number based on highest number on board.
             add_tile(x, y, 2);
-            if (DEBUG_PRINT) printf("tile added at %d, %d\n", x, y);
+            if (DEBUGGING) printf("tile added at %d, %d\n", x, y);
         }
 
         if (board_full() && ((check_rows(1) || check_rows(-1) || check_cols(1) || check_cols(-1)))) {
@@ -247,43 +246,37 @@ int main(int argc, char* argv[]) {
 
         // get user input
         char input;
+        Direction move;
         input = getchar();
         while (getchar() != '\n');
 
+
         if (input == 'd') {
-            if (check_rows(1)) {
-                board_moved_lastturn = 1;
-                for (int i = 0; i < TILE_SIZE; i++) {
-                    shift_row(i,1);
-                }
-            }
-        }
-        else if (input == 'a') {
-            if (check_rows(-1)) {
-                board_moved_lastturn = 1;
-                for (int i = 0; i < TILE_SIZE; i++) {
-                    shift_row(i,-1);
-                }
-            }
-        }
-        else if (input == 's') {
-            if (check_cols(1)) {
-                board_moved_lastturn = 1;
-                for (int i = 0; i < TILE_SIZE; i++) {
-                    shift_col(i,1);
-                }
-            }
-        }
-        else if (input == 'w') {
-            if (check_cols(-1)) {
-                board_moved_lastturn = 1;
-                for (int i = 0; i < TILE_SIZE; i++) {
-                    shift_col(i,-1);
-                }
-            }
-        }
-        else if (input == 'q') {
+            move = RIGHT;
+        } else if (input == 'a') {
+            move = LEFT;
+        } else if (input == 's') {
+            move = DOWN;
+        } else if (input == 'w') {
+            move = UP;
+        } else if (input == 'q') {
             game_running = 0;
+        } else {
+            continue;
+        }
+
+        if ((move == LEFT || move == RIGHT) && check_rows(move)) {
+            board_moved_lastturn = 1;
+            for (int i = 0; i < TILE_SIZE; i++) {
+                shift_row(i,move);
+            }
+
+        }
+        else if ((move == UP || move == DOWN) && check_cols(move)) {
+            board_moved_lastturn = 1;
+            for (int i = 0; i < TILE_SIZE; i++) {
+                shift_col(i,move);
+            }
         }
         CLEAR;
     }
