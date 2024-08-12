@@ -4,10 +4,13 @@ CC=gcc -g
 CFLAGS=-Wall -std=c99
 INC=-I include/
 LIB=-L lib/
+BIN=2048
+
 
 ifeq ($(OS),Windows_NT)
 	CFLAGS+= -D WIN32
 	LINK=-lraylib -lopengl32 -lgdi32 -lwinmm
+	BIN=2048.exe
 else
 	UNAME_S := $(shell uname -s)
 	ifeq ($(UNAME_S),Linux)
@@ -21,7 +24,7 @@ else
 endif
 
 screen:
-	$(SH) "$(CC) $(CFLAGS) ./src/board.c ./src/screen.c -o screen $(INC) $(LIB) $(LINK)"
+	$(SH) "$(CC) $(CFLAGS) ./src/board.c ./src/screen.c -o $(BIN) $(INC) $(LIB) $(LINK)"
 
 clean:
-	rm -f ./board ./screen
+	rm -f $(BIN)
