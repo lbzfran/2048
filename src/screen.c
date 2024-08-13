@@ -81,7 +81,7 @@ void update() {
 
 void draw_board() {
     // board
-    DrawRectangleV((Vector2){WIDTH/6.0, HEIGHT/6.0}, (Vector2){450, 450}, BEIGE);
+    DrawRectangleV((Vector2){WIDTH/6.0, HEIGHT/6.0}, (Vector2){450, 450}, LIGHTGRAY);
     // bg of tiles
     for (int i = 1; i <= TILE_SIZE; i++) {
         for (int j = 1; j <= TILE_SIZE; j++) {
@@ -97,29 +97,41 @@ void draw_tiles() {
         for (int j = 0; j < TILE_SIZE; j++) {
             if (current_board[i][j] != 0) {
                 //DrawRectangleV((Vector2){((j+1) * 110)+(43), ((i+1) * 110)-(10)}, (Vector2){100, 100}, LIGHTGRAY);
-                Color color;
+                Color color1, color2;
                 if (current_board[i][j] == 2) {
-                    color = RED;
+                    color1 = RED;
+                    color2 = MAROON;
                 } else if (current_board[i][j] == 4) {
-                    color = ORANGE;
+                    color1 = ORANGE;
+                    color2 = DARKBROWN;
                 } else if (current_board[i][j] == 8) {
-                    color = YELLOW;
+                    color1 = YELLOW;
+                    color2 = GOLD;
                 } else if (current_board[i][j] == 16) {
-                    color = GREEN;
+                    color1 = GREEN;
+                    color2 = LIME;
                 } else if (current_board[i][j] == 32) {
-                    color = SKYBLUE;
+                    color1 = SKYBLUE;
+                    color2 = DARKBLUE;
                 } else if (current_board[i][j] == 64) {
-                    color = BLUE;
+                    color1 = BLUE;
+                    color2 = DARKBLUE;
                 } else if (current_board[i][j] == 128) {
-                    color = PURPLE;
+                    color1 = PURPLE;
+                    color2 = VIOLET;
                 } else if (current_board[i][j] == 256) {
-                    color = VIOLET;
+                    color1 = MAGENTA;
+                    color2 = VIOLET;
                 } else if (current_board[i][j] == 512) {
-                    color = PINK;
+                    color1 = PINK;
+                    color2 = MAROON;
                 } else {
-                    color = BLACK;
+                    color1 = GRAY;
+                    color2 = BLACK;
                 }
-                DrawRectangleV((Vector2){((j+1) * 110)+(43), ((i+1) * 110)-(10)}, (Vector2){100, 100}, color);
+                //((WIDTH/1.45) - j * 110), ((HEIGHT/1.15) - i * 110)
+                DrawRectangleV((Vector2){((j+1) * 110)+43,((i+1) * 110)+7}, (Vector2){100, 100}, color2);
+                DrawRectangleV((Vector2){((j+1) * 110)+43, ((i+1) * 110)}, (Vector2){100, 100}, color1);
                 DrawText(TextFormat("%d", current_board[i][j]), ((j+1) * 110)+80, ((i+1) * 110)+30, 30, BLACK);
             }
         }
