@@ -208,7 +208,7 @@ void render_board(int num_tiles) {
 }
 
 
-int boot_cli() {
+void boot_cli(void) {
     // play game in CLI mode.
     int x;
     int y;
@@ -216,7 +216,7 @@ int boot_cli() {
     int game_running = 1;
 
     //system("clear");
-    printf("\x1B[2J");
+    CLEAR;
     while (game_running) {
 
         if (board_moved_lastturn) {
@@ -282,5 +282,4 @@ int boot_cli() {
     }
     printf("game has ended.\n");
     render_board(TILE_SIZE);
-    return 0;
 }

@@ -23,5 +23,6 @@ void shift_row(int x, Direction);
 void shift_col(int y, Direction);
 char *render_tile(int x, int y);
 void render_board(int num_tiles);
+void boot_cli(void);
 
 #endif

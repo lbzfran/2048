@@ -148,7 +148,7 @@ void draw() {
     EndDrawing();
 }
 
-int main(void) {
+void boot_gui(void) {
     InitWindow(WIDTH, HEIGHT, "Hello, World!");
     SetTargetFPS(60);
 
@@ -158,5 +158,4 @@ int main(void) {
     }
     if (DEBUGGING) printf("Game over!\n");
     CloseWindow();
-    return 0;
 }

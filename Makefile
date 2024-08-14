@@ -24,7 +24,7 @@ else
 endif
 
 screen:
-	$(SH) "$(CC) $(CFLAGS) ./src/board.c ./src/screen.c -o $(BIN) $(INC) $(LIB) $(LINK)"
+	$(SH) "$(CC) $(CFLAGS) ./src/board.c ./src/screen.c ./src/main.c -o $(BIN) $(INC) $(LIB) $(LINK)"
 
 clean:
 	rm -f $(BIN)

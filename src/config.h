@@ -8,19 +8,15 @@
 
 // context-cracking and debug tools
 # define ENABLE_ASSERT
-# define DEBUGGING true
+# define DEBUGGING false
 //# define CLI_MODE
 
 # ifdef _WIN32
    #include "../include/raylib.h"
-#  ifdef CLI_MODE
-#   define CLEAR printf("\033[2J")
-#  endif
+#  define CLEAR printf("\033[2J")
 # elif __linux__
    #include <raylib.h>
-#  ifdef CLI_MODE
-#   define CLEAR system("clear")
-#  endif
+#  define CLEAR system("clear")
 # endif
 
 # ifdef ENABLE_ASSERT
@@ -29,8 +25,5 @@
 #  define ASSERT(c)
 # endif
 
-# ifndef CLI_MODE
-#  define CLEAR
-# endif
 
 #endif
