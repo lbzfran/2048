@@ -1,11 +1,9 @@
-
 SH=sh -c
 CC=gcc -g
 CFLAGS=-Wall -std=c99
 INC=-I include/
 LIB=-L lib/
 BIN=2048
-
 
 ifeq ($(OS),Windows_NT)
 	CFLAGS+= -D WIN32
@@ -23,7 +21,7 @@ else
 	endif
 endif
 
-screen:
+install:
 	$(SH) "$(CC) $(CFLAGS) ./src/board.c ./src/screen.c ./src/main.c -o $(BIN) $(INC) $(LIB) $(LINK)"
 
 clean:

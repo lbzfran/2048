@@ -149,7 +149,7 @@ void draw() {
 }
 
 void boot_gui(void) {
-    InitWindow(WIDTH, HEIGHT, "Hello, World!");
+    InitWindow(WIDTH, HEIGHT, "2048");
     SetTargetFPS(60);
 
     while (!WindowShouldClose() && game_running) {
