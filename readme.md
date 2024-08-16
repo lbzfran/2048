@@ -1,8 +1,6 @@
 
 # 2048 Game
-<video width="320" height="240" controls>
-    <source src="./example.mp4" type = "video/mp4">
-</video>
+https://github.com/user-attachments/assets/76e482db-043b-468f-922b-174be560db8c
 
 A simple experimental clone of 2048 developed in C.
 
